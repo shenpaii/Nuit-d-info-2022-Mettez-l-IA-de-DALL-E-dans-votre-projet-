@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous" />
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <script type = "text/javascript" src="{% static 'app.js' %}"></script>  
+
+</head>
+
+<style>
+    body {font-family: Arial, Helvetica, sans-serif;}
+    * {box-sizing: border-box;}
+    
+    /* Button used to open the chat form - fixed at the bottom of the page */
+    .open-button {
+      background-color: #555;
+      color: white;
+      padding: 16px 20px;
+      border: none;
+      cursor: pointer;
+      opacity: 0.8;
+      position: fixed;
+      bottom: 23px;
+      right: 28px;
+      width: 280px;
+    }
+    
+    /* The popup chat - hidden by default */
+    .chat-popup {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      right: 15px;
+      border: 3px solid #f1f1f1;
+      z-index: 9;
+    }
+    
+    /* Add styles to the form container */
+    .form-container {
+      max-width: 300px;
+      padding: 10px;
+      background-color: white;
+    }
+    
+    /* Full-width textarea */
+    .form-container textarea {
+      width: 100%;
+      padding: 15px;
+      margin: 5px 0 22px 0;
+      border: none;
+      background: #f1f1f1;
+      resize: none;
+      min-height: 200px;
+    }
+    
+    /* When the textarea gets focus, do something */
+    .form-container textarea:focus {
+      background-color: #ddd;
+      outline: none;
+    }
+    
+    /* Set a style for the submit/send button */
+    .form-container .btn {
+      background-color: #04AA6D;
+      color: white;
+      padding: 16px 20px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom:10px;
+      opacity: 0.8;
+    }
+    
+    /* Add a red background color to the cancel button */
+    .form-container .cancel {
+      background-color: red;
+    }
+    
+    /* Add some hover effects to buttons */
+    .form-container .btn:hover, .open-button:hover {
+      opacity: 1;
+    }
+    .allUsersList{
+  width: 300px;
+  margin: 20px;
+}
+.allUsersList .card-header{
+  background: #683db8;
+  color: #FFF;
+  padding: 10px;
+}
+.allUsersList .image img{
+  border-radius: 16px;
+}
+.usersChatList{
+  position: absolute;
+  width: 250px;
+  bottom: 0;
+  margin-bottom: 0;
+  right: 360px;
+}
+.show{
+  display: block;
+}
+.thumb-user-list{
+  display: none;
+}
+.thumb-user-list .image img{
+  border-radius: 30px;
+}
+.usersChatList .card-header{
+  background: #683db8;
+  font-size: 13px;
+}
+.chatBox{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 300px;
+  margin: 40px;
+  margin-bottom: 0;
+  font-size: 13px;
+}
+.chat-content{
+  overflow: auto;
+  height: 300px;
+}
+.chatBox .card{
+  border-radius: 4px;
+}
+.chatBox .card-header{
+  background: #683db8;
+}
+.header-title{
+  height: 50px;
+}
+.card-header-title i{
+  font-size: 10px;
+  color: #32e4cd;
+  margin-right: 6px;
+}
+.card-header .card-header-title{
+  color: #FFF;
+}
+.chat-content small{
+  margin: 0;
+}
+.chat-content p{
+  background: #ecf1f8;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 0;
+}
+.my-content .media-content{
+  width: 80%;
+}
+.my-content .message{
+  float: right;
+  background: #683db8;
+  color: #FFF;
+  text-align: right;
+  padding: 10px;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+.my-content .chat-content small{
+  float: right;
+}
+.my-content small{
+  display: block;
+  float: right;
+  width: 100%;
+  text-align: right;
+}
+.chat-textarea{
+  font-size: 14px;
+  padding: 8px;
+  height: 40px;
+  width: 100%;
+  border: none;
+  overflow: auto;
+  outline: none;
+
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  resize: none;
+}
+.chat-message-group{
+  
+}
+.chat-message-group .chat-thumb{
+  float: left;
+  width: 20%;
+}
+.chat-message-group .chat-messages{
+  float: left;
+  width: 80%;
+  margin-bottom: 20px;
+}
+.chat-message-group .message{
+  float: left;
+  padding: 10px;
+  background: #ecf1f8;
+  font-size: 13px;
+  border-radius: 5px;
+  margin-bottom: 3px;
+}
+.chat-messages .from{
+  float: left;
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-size: 11px;
+}
+.chat-thumb img{
+  border-radius: 40px;
+}
+.writer-user .chat-messages{
+  float: right;
+  width: 100%;
+}
+.writer-user .chat-messages .message{
+  float: right;
+  background: #683db8;
+  color: #FFF;
+}
+.writer-user .chat-messages .from{
+  float: left;
+  display: block;
+  width: 100%;
+  text-align: right;
+}
+.chat-message-group .typing{
+  float: left;
+}
+.chatBox .card-header-icon i{
+  color: #FFF;
+  font-size: 13px;
+}
+/* CSSS */
+.outside-box{
+  height: 100px;
+  background: #F8C;
+  width: 200px;
+  margin: 20px;
+  overflow: auto;
+}
+.outside-box .content-insider{
+  height: 300px;
+  background: #C9C;
+}
+/* CSS Spinner */
+.spinner {
+  margin: 0 30px;
+  width: 70px;
+  text-align: center;
+}
+
+.spinner > div {
+  width: 4px;
+  height: 4px;
+  background-color: #888;
+
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+  0%, 80%, 100% { -webkit-transform: scale(0) }
+  40% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bouncedelay {
+  0%, 80%, 100% { 
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  } 40% { 
+    -webkit-transform: scale(1.0);
+    transform: scale(1.0);
+  }
+}
+/* EmojiBox */
+.emojiBox{
+  width: 150px;
+  margin: 30px;
+}
+.emojiBox .box{
+  height: 100px;
+  padding: 4px;
+}
+/* */
+.card-header-title img{
+  border-radius: 40px;
+}
+    </style>
+
+<body>
+
+
+    <header class="vh-100">
+        <div class="container">
+            <div class="row vh-100 align-items-center">
+                <div class="col-md-6 card bg-transparent border-0 text-black">
+                    <div class="card-body">
+                        <h1 class="card-title display-3">luter contre  <b>les Maladies Sexuellement Transmissible  </b></h1>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <button class="btn btn-success btn-lg" type="submit" Onclick="window.open('http://localhost:3000','_blank','resizable=yes')" >GENERATION OPENIA</button>
+    <main>
+        <div class="container">
+            <div class="row py-5">
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="card bg-transparent border-0 ">
+                        <div class="card-body">
+                            <h6 class="card-title text-uppercase text-mavi">BIENVENUE</h6>
+                            <h2 class="card-subtitle mb-2">c'est quoi MST?</h2>
+                            <p class="card-text py-4">Les maladies sexuellement transmissibles (MST), désormais appelées infections sexuellement transmissibles (IST) sont des maladies infectieuses.
+
+                                Les maladies sexuellement transmissibles (MST) sont dues à différents micro-organismes (bactéries, virus, champignons ou parasites) et se transmettent lors des rapports sexuels.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <img class="mw-100" src="{% static 'img/mst.jpg' %}" />
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row bg-mavi text-white">
+                <div class="col-md-6 vh-50 order-md-1 text-center">
+                    <div class="card bg-transparent border-0 vh-50 ">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <h6 class="card-title text-uppercase "></h6>
+                            <h2 class="card-subtitle mb-2">VIH</h2>
+                            <p class="card-text py-4">Le VIH est le virus de l’immunodéficience humaine. C’est une IST, c’est-à-dire une infection qui peut se transmettre lors de relations sexuelles comme par exemple, l’herpès génital, la chlamydia et la syphilis. La particularité du VIH est qu’il s’attaque aux cellules du système immunitaire, en particulier aux lymphocytes T CD4. Ce sont des cellules qui protègent le corps contre les attaques des maladies et autres infections.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 vh-50 order-md-0 d-flex" style="background: url('{% static "img/mst1.jpg" %}') center/cover"></div>
+                <div class="col-md-6 vh-50 order-md-1 text-center">
+                    <div class="card bg-transparent border-0 vh-50 ">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <h2 class="card-subtitle mb-2">SIDA</h2>
+                            <p class="card-text py-4">Le Virus de l'Immunodéficience Humaine provoque une infection virale qui attaque le système immunitaire (système complexe de défense de l'organisme contre les maladies) et l'empêche de fonctionner correctement. Une personne séropositive est porteuse du VIH.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 vh-50 order-md-1  hover-img" style="background: url('{% static "img/mst2.png" %}') center/cover"></div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row py-5">
+                <h2 class="headertekst"> Les associations de la lutte contre MST</h2>
+
+                <div class="col-md-4 py-5  text-center">
+                    <div class="card border-0 align-items-center">
+                        <img src="{% static 'img/medicinelogo.png' %}" class="card-img-top" alt="Modern medicine">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <h5 class="card-title py-3">ATL</h5>
+                            <p class="card-text">L’Association Tunisienne de Lutte contre les MST et le sida (ATL), créée en 1990, est la première association de lutte contre le sida en Tunisie. </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 py-5  text-center">
+                    <div class="card border-0 align-items-center">
+                        <img src="{% static 'img/personlogo.png' %}" class="card-img-top" alt="Modern medicine">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <h5 class="card-title py-3">solidarite-sida</h5>
+                            <p class="card-text">Solidarité sida est une association loi de 1901 créée en 1992 par Luc Barruet et Éric Elzière dans le but de lutter contre le sida.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 py-5  text-center">
+                    <div class="card border-0 align-items-center">
+                        <img src="{% static 'img/healthlogo.png' %}" class="card-img-top" alt="Modern medicine">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <h5 class="card-title py-3">Sidaction</h5>
+                            <p class="card-text">Parmi les associations françaises de lutte contre le VIH/sida, Sidaction est la seule à financer la recherche. Sidaction soutient des projets de recherche</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 text-center">
+                    <div class="card border-0 align-items-center">
+                        <img src="{% static 'img/medicialAidlogo.png' %}" class="card-img-top" alt="Modern medicine">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <h5 class="card-title py-3">AIDES EN FRANCE</h5>
+                            <p class="card-text">AIDES intervient sur l'ensemble du territoire auprès des personnes séropositives et des populations les plus vulnérables au VIH.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 text-center">
+                    <div class="card border-0 align-items-center">
+                        <img src="{% static 'img/biologicylogo.png' %}" class="card-img-top" alt="Modern medicine">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <h5 class="card-title py-3">SIDA INFO SERVICE</h5>
+                            <p class="card-text">Service d'aide à distance d'information sur le sida, les Infections</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 text-center">
+                    <div class="card border-0 align-items-center">
+                        <img src="{% static 'img/privatedoctorlogo.png' %}" class="card-img-top" alt="Modern medicine">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <h5 class="card-title py-3">CDNAIDS</h5>
+                            <p class="card-text">la Société canadienne du sida (SCS) représente ses membres au palier national, guider par la voix des personnes vivant avec le VIH/sida.  Nous sommes un mouvement émanant de la communauté et nous sommes fiers de nos racines. </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+  
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 text-center mb-5">
+                            <h2 class="heading-section"></h2>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10 col-md-12">
+                            <div class="wrapper">
+                                <div class="row no-gutters">
+                                    <div class="col-md-7 d-flex align-items-stretch">
+                                        <div class="contact-wrap w-100 p-md-5 p-4">
+                                            <h3 class="mb-4">Contactez nous</h3>
+                                            {% if messages%} {% for message in messages %}
+                                                <div class="alert alert-{{message.tags}}">{{ message }}</div>
+                                            {% endfor %} {% endif %}
+                                            <form method="POST" id="contactForm" name="contactForm">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            {{form.nom}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            {{form.email}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            {{form.sujet}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            {{form.message}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <button class="btn btn-primary submit-btn" type="submit">
+                                                                Envoyez message
+                                                              </button>
+                                                        </div>
+                                                    </div>
+                                                
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 d-flex align-items-stretch">
+                                        <div class="info-wrap bg-primary w-100 p-lg-5 p-4">
+                                            <h3 class="mb-4 mt-md-4">Contactez-nous</h3>
+                                    <div class="dbox w-100 d-flex align-items-start">
+                                        <div class="icon d-flex align-items-center justify-content-center">
+                                            <span class="fa fa-map-marker"></span>
+                                        </div>
+                                        <div class="text pl-3">
+                                        <p><span>Addresse:</span> ISITCOM, Sousse-Tunisie</p>
+                                      </div>
+                                  </div>
+                                    <div class="dbox w-100 d-flex align-items-center">
+                                        <div class="icon d-flex align-items-center justify-content-center">
+                                            <span class="fa fa-phone"></span>
+                                        </div>
+                                        <div class="text pl-3">
+                                        <p><span>Mobile:</span> <a href="tel://1234567920">+ 1235 2355 98</a></p>
+                                      </div>
+                                  </div>
+                                    <div class="dbox w-100 d-flex align-items-center">
+                                        <div class="icon d-flex align-items-center justify-content-center">
+                                            <span class="fa fa-paper-plane"></span>
+                                        </div>
+                                        <div class="text pl-3">
+                                        <p><span>Email:</span> <a href="mailto:info@yoursite.com">insomnia@isitc.u-sousse.tn</a></p>
+                                      </div>
+                                  </div>
+                                    <div class="dbox w-100 d-flex align-items-center">
+                                        <div class="icon d-flex align-items-center justify-content-center">
+                                            <span class="fa fa-globe"></span>
+                                        </div>
+                                        <div class="text pl-3">
+                                        <p><span>Site web</span> <a href="#">isitcom.rnu.tn/</a></p>
+                                      </div>
+                                  </div>
+                              </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+    </main>
+ 
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js " integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p " crossorigin="anonymous "></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
+    <script src="js/main.js"></script>
+    <br><br>
+</body>
+
+</html>
